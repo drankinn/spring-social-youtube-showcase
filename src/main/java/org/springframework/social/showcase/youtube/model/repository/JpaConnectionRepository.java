@@ -8,5 +8,5 @@ import org.springframework.social.showcase.youtube.model.entity.UserConnection;
  * Date: 7/25/12
  * Time: 4:41 PM
  */
-public interface ConnectionRepository extends ConnectionRepositoryCustom,  JpaRepository<Long, UserConnection> {
+public interface JpaConnectionRepository extends ConnectionRepositoryCustom,  JpaRepository<Long, UserConnection> {
 }

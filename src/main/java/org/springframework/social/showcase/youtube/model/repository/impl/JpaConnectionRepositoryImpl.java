@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.showcase.youtube.model.repository.ConnectionRepositoryCustom;
+import org.springframework.social.showcase.youtube.model.repository.JpaConnectionRepositoryCustom;
 import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityManager;
@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 7/25/12
  * Time: 4:44 PM
  */
-public class ConnectionRepositoryImpl implements ConnectionRepositoryCustom, ConnectionRepository {
+public class JpaConnectionRepositoryImpl implements JpaConnectionRepositoryCustom, ConnectionRepository {
 
     @PersistenceUnit
     EntityManager entityManager;

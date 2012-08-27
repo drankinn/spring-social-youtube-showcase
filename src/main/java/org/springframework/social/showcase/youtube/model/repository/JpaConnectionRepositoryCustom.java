@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 4:43 PM
  */
 @NoRepositoryBean
-public interface ConnectionRepositoryCustom {
+public interface JpaConnectionRepositoryCustom {
 
     MultiValueMap<String, Connection<?>> findAllConnections();
 
