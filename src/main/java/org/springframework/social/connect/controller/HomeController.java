@@ -15,14 +15,16 @@ import javax.inject.Provider;
  * Time: 1:13 PM
  */
 @Controller
+@RequestMapping("/")
 public class HomeController {
 
     @Inject
     private Provider<ConnectionRepository> connectionRepositoryProvider;
 
-    @RequestMapping(value="index", method= RequestMethod.GET)
+    @RequestMapping(method= RequestMethod.GET)
     public String index(Model model){
-        connectionRepositoryProvider.get();
-        return "home:index";
+
+
+        return "home.index";
     }
 }

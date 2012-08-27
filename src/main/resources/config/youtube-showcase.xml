@@ -2,8 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <mvc:default-servlet-handler/>
 
     <mvc:resources mapping="/resources/**" location="classpath:css/, classpath:images/, classpath:js/" cache-period="0"/>
 
@@ -12,6 +15,17 @@
            <bean class="org.springframework.data.web.PageableArgumentResolver"/>
        </mvc:argument-resolvers>
     </mvc:annotation-driven>
+    <context:component-scan base-package="org.springframework.social.connect.controller"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:/**.properties</value>
+            </list>
+        </property>
+    </bean>
+
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="order" value="1"/>
         <property name="ignoreAcceptHeader" value="true"/>
@@ -22,7 +36,7 @@
         </property>
         <property name="defaultViews">
             <list>
-                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+                <bean class="org.springframework.web.servlet.view.json.YoutubeMappingJacksonJsonView"/>
             </list>
         </property>
     </bean>
@@ -43,19 +57,75 @@
     </bean>
 
 
-    <!-- social-->
+
+
+    <!-- #################################### Spring Social ######################################### -->
+
     <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
         <property name="connectionFactories">
             <list>
                 <bean id="youtubeConnectionFactory" class="org.springframework.social.youtube.connect.YoutubeConnectionFactory">
                     <constructor-arg name="clientId" value="${youtube.clientId}"/>
                     <constructor-arg name="clientSecret" value="${youtube.clientSecret}"/>
+                    <constructor-arg name="developerKey" value="${youtube.developerKey}"/>
                 </bean>
             </list>
         </property>
         <aop:scoped-proxy />
     </bean>
 
-    <bean id="youtube" class="org.springframework.social.youtube.api.impl.YoutubeTemplate" scope="request"/>
+    <bean id="connectionRepository" scope="request" class="org.springframework.social.youtube.connect.service.ConnectionRepositoryService">
+        <constructor-arg name="userId" value="#{ T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()}" />
+        <constructor-arg name="dataAdapter" >
+            <bean class="org.springframework.social.youtube.connect.util.ConnectionDataAdapter">
+                <constructor-arg name="factoryLocator" ref="connectionFactoryLocator"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="locator" ref="connectionFactoryLocator"/>
+        <constructor-arg name="repository" ref="oAuth2UserProviderConnectionRepository"/>
+        <constructor-arg name="textEncryptor" >
+            <bean class="org.springframework.security.crypto.encrypt.Encryptors$NoOpTextEncryptor"/>
+        </constructor-arg>
+        <aop:scoped-proxy/>
+    </bean>
+
+    <bean id="youtube" factory-bean="connectionRepository" scope="request" factory-method="findPrimaryConnection">
+        <constructor-arg name="apiType" type="java.lang.Class">
+            <value>org.springframework.social.youtube.api.Youtube</value>
+        </constructor-arg>
+        <aop:scoped-proxy/>
+    </bean>
+
+    <bean id="connectController" class="org.springframework.social.connect.web.ConnectController">
+        <constructor-arg index="0" ref="connectionFactoryLocator"/>
+        <constructor-arg index="1" ref="connectionRepository"/>
+
+    </bean>
+    <bean id="reqquestCache" class="org.springframework.security.web.savedrequest.HttpSessionRequestCache"/>
+    <bean id="simpleSignInAdapter" class="org.springframework.social.showcase.signin.SimpleSignInAdapter">
+        <constructor-arg ref="reqquestCache"/>
+    </bean>
+
+    <bean id="providerSignInController" class="org.springframework.social.connect.web.ProviderSignInController">
+
+        <constructor-arg index="0" ref="connectionFactoryLocator"/>
+        <constructor-arg index="1" ref="connectionRepository"/>
+        <constructor-arg index="2" ref="simpleSignInAdapter"/>
+    </bean>
+
+    <!-- ############################## End Spring Social #####################################################-->
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+        <property name="order" value="1"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="order" value="2"/>
+        <property name="exceptionMappings">
+            <map>
+                <entry key="MissingAuthorizationException" value="error/authorization"/>
+            </map>
+        </property>
+    </bean>
 
 </beans>

@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <jpa:repositories
-            base-package="org.springframework.social.showcase.youtube.model.repository"
+            base-package="org.springframework.social.youtube.model.repository"
             entity-manager-factory-ref="entityManagerFactory"
             transaction-manager-ref="transactionManager"/>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -18,12 +18,13 @@
                 <property name="database" value="H2"/>
             </bean>
         </property>
-        <property name="packagesToScan" value="org.springframework.social.showcase.youtube.model.entity"/>
+        <property name="packagesToScan" value="org.springframework.social.youtube.model.entity"/>
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.hbm2dll.auto" value="update"/>
             </map>
         </property>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>

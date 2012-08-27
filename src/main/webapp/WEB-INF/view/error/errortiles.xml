@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="error.base" template="/WEB-INF/view/template/base.jsp">
+        <put-attribute name="body" value="/WEB-INF/view/template/body.jsp" cascade="true"/>
+    </definition>
+
+    <definition name="error/authorization" extends="error.base">
+        <put-attribute name="body" value="/WEB-INF/view/error/authorization.jsp"/>
+    </definition>
+</tiles-definitions>

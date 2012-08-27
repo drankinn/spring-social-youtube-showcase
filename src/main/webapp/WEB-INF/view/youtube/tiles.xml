@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="youtube.base" template="/WEB-INF/view/template/base.jsp">
+        <put-attribute name="body" value="/WEB-INF/view/template/body.jsp" cascade="true"/>
+    </definition>
+
+    <definition name="youtube/profile" extends="youtube.base">
+        <put-attribute name="body" value="/WEB-INF/view/youtube/profile.jsp"/>
+    </definition>
+    <definition name="youtube/profile/username-suggestions" extends="youtube.base">
+        <put-attribute name="body" value="/WEB-INF/view/youtube/usernameSuggestions.jsp"/>
+
+    </definition>
+
+
+</tiles-definitions>

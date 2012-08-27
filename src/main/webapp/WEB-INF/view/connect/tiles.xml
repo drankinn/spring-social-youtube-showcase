@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="connect.base" template="/WEB-INF/view/template/base.jsp">
+        <put-attribute name="body" value="/WEB-INF/view/template/body.jsp" cascade="true"/>
+    </definition>
+
+    <definition name="connect/youtubeConnect" extends="connect.base">
+        <put-attribute name="body" value="/WEB-INF/view/connect/youtubeConnect.jsp"/>
+    </definition>
+
+    <definition name="connect/youtubeConnected" extends="connect.base">
+        <put-attribute name="body" value="/WEB-INF/view/connect/youtubeConnected.jsp"/>
+    </definition>
+
+    <definition name="connect/status" extends="connect.base">
+        <put-attribute name="body" value="/WEB-INF/view/connect/status.jsp"/>
+    </definition>
+
+    <definition name="home.index" extends="base">
+        <put-attribute name="body" value="/WEB-INF/view/index.jsp"/>
+    </definition>
+</tiles-definitions>
